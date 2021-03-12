@@ -1,0 +1,100 @@
+{
+    "variables": {
+        "vsphere_server": "{{env `vsphere_server`}}",
+        "vsphere_user": "{{env `vsphere_user`}}",
+        "vsphere_password": "{{env `vsphere_password`}}",
+        "vsphere_template_name": "Ubuntu1804",
+        "vsphere_folder": "{{env `vsphere_folder`}}",
+        "vsphere_dc_name": "{{env `vsphere_dc_name`}}",
+        "vsphere_compute_cluster": "{{env `vsphere_password`}}",
+        "vsphere_resource_pool": "{{env `vsphere_resource_pool`}}",
+        "vsphere_host": "{{env `vsphere_host`}}",
+        "vsphere_portgroup_name": "{{env `vsphere_portgroup_name`}}",
+        "vsphere_datastore": "{{env `vsphere_datastore`}}",
+        "linux_admin_password": "{{env `linux_admin_password`}}",
+        "cpu_num": "1",
+        "mem_size": "512",
+        "disk_size": "20480",
+        "os_iso_url": "",
+        "os_iso_path": "[iso] Ubuntu18.04.5/ubuntu-18.04.5-server-amd64.iso",
+        "os_iso_checksum": "",
+        "os_iso_checksum_type": "",
+        "vmtools_iso_path": "[iso] VMware Tools/VMware-tools-windows-11.1.1-16303738.iso"
+    },
+    "sensitive-variables": [
+        "vsphere_password",
+        "linux_admin_password"
+    ],
+    "builders": [
+        {
+            "type": "vsphere-iso",
+            "username": "{{user `vsphere_user`}}",
+            "vcenter_server": "{{user `vsphere_server`}}",
+            "insecure_connection": "true",
+            "cluster": "{{user `vsphere_compute_cluster`}}",
+            "datacenter": "{{user `vsphere_dc_name`}}",
+            "host": "{{user `vsphere_host`}}",
+            "datastore": "{{user `vsphere_datastore`}}",
+            "vm_name": "{{user `vsphere_template_name`}}",
+            "folder": "{{user `vsphere_folder`}}",
+            "CPUs": "{{user `cpu_num`}}",
+            "RAM": "{{user `mem_size`}}",
+            "RAM_reserve_all": true,
+            "firmware": "bios",
+            "communicator": "ssh",
+            "ssh_username": "ubuntu",
+            "ssh_password": "{{user `linux_admin_password`}}",
+            "disk_controller_type": "lsilogic-sas",
+            "floppy_files": [
+                "answer_files/preseed.cfg"
+            ],
+            "guest_os_type": "ubuntu64Guest",
+            "boot_command": [
+                "<enter><wait><f6><wait><esc><wait>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs>",
+                "/install/vmlinuz",
+                " initrd=/install/initrd.gz",
+                " priority=critical",
+                " locale=en_US",
+                " file=/media/preseed.cfg",
+                "<enter>"
+            ],
+            "iso_paths": [
+                "{{user `os_iso_path`}}"
+            ],
+            "remove_cdrom": true,
+            "network_adapters": [
+                {
+                    "network_card": "vmxnet3"
+                }
+            ],
+            "password": "{{user `vsphere_password`}}",
+            "resource_pool": "{{user `vsphere_resource_pool`}}",
+            "storage": [
+                {
+                    "disk_size": "{{user `disk_size`}}",
+                    "disk_thin_provisioned": true
+                }
+            ],
+            "convert_to_template": true,
+            "notes": "created on: {{isotime}}"
+        }
+    ],
+    "provisioners": [
+        {
+            "execute_command": "echo '{{ user `ssh_password` }}' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'",
+            "scripts": [
+                "scripts/ubuntu/SysPrepLinux.sh"
+            ],
+            "type": "shell"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "_comment": "Replace with the values specific to your environment",
+    "vsphere_server": "vsphereHost.local",
+    "vsphere_user": "administrator@vsphere.local",
+    "vsphere_password": "SecretPa$$word",
+    "vsphere_folder": "Templates",
+    "vsphere_compute_cluster": "CLUSTER_NAME",
+    "vsphere_dc_name": "DC_NAME",
+    "vsphere_resource_pool": "PackerResourcePool",
+    "vsphere_host": "esxiHost.local",
+    "vsphere_portgroup_name": "lab_portgroup",
+    "vsphere_datastore": "N3_SSD_860_EVO",
+    "windows_admin_password": "SecretPa$$word",
+    "linux_admin_password": "SecretPa$$word"
+}

@@ -1,0 +1,87 @@
+{
+    "variables": {
+        "vsphere_server": "{{env `vsphere_server`}}",
+        "vsphere_user": "{{env `vsphere_user`}}",
+        "vsphere_password": "{{env `vsphere_password`}}",
+        "vsphere_template_name": "Win2019Gui",
+        "vsphere_folder": "{{env `vsphere_folder`}}",
+        "vsphere_dc_name": "{{env `vsphere_dc_name`}}",
+        "vsphere_compute_cluster": "{{env `vsphere_password`}}",
+        "vsphere_resource_pool": "{{env `vsphere_resource_pool`}}",
+        "vsphere_host": "{{env `vsphere_host`}}",
+        "vsphere_portgroup_name": "{{env `vsphere_portgroup_name`}}",
+        "vsphere_datastore": "{{env `vsphere_datastore`}}",
+        "windows_admin_password": "{{env `windows_admin_password`}}",
+        "cpu_num": "1",
+        "mem_size": "1024",
+        "disk_size": "20480",
+        "os_iso_url": "",
+        "os_iso_path": "[iso] WIN2019/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso",
+        "os_iso_checksum": "",
+        "os_iso_checksum_type": "",
+        "vmtools_iso_path": "[iso] VMware Tools/windows.iso"
+    },
+    "sensitive-variables": [
+        "vsphere_password",
+        "windows_admin_password"
+    ],
+    "builders": [
+        {
+            "type": "vsphere-iso",
+            "username": "{{user `vsphere_user`}}",
+            "vcenter_server": "{{user `vsphere_server`}}",
+            "insecure_connection": "true",
+            "cluster": "{{user `vsphere_compute_cluster`}}",
+            "datacenter": "{{user `vsphere_dc_name`}}",
+            "host": "{{user `vsphere_host`}}",
+            "datastore": "{{user `vsphere_datastore`}}",
+            "vm_name": "{{user `vsphere_template_name`}}",
+            "folder": "{{user `vsphere_folder`}}",
+            "CPUs": "{{user `cpu_num`}}",
+            "RAM": "{{user `mem_size`}}",
+            "RAM_reserve_all": true,
+            "firmware": "bios",
+            "communicator": "winrm",
+            "winrm_username": "Administrator",
+            "winrm_password": "{{user `windows_admin_password`}}",
+            "disk_controller_type": "lsilogic-sas",
+            "floppy_files": [
+                "answer_files/win2019gui/autounattend.xml",
+                "scripts/win-common/Enable-WinRM.ps1",
+                "scripts/win-common/Install-VMTools.ps1",
+                "scripts/win-common/Set-Default-Shell.ps1",
+                "scripts/win-common/Start-DomainJoin.ps1",
+                "scripts/win-common/SysPrepWin.ps1"
+            ],
+            "guest_os_type": "windows9_64Guest",
+            "iso_paths": [
+                "{{user `os_iso_path`}}",
+                "{{user `vmtools_iso_path`}}"
+            ],
+            "remove_cdrom": true,
+            "network_adapters": [
+                {
+                    "network_card": "vmxnet3"
+                }
+            ],
+            "password": "{{user `vsphere_password`}}",
+            "resource_pool": "{{user `vsphere_resource_pool`}}",
+            "storage": [
+                {
+                    "disk_size": "{{user `disk_size`}}",
+                    "disk_thin_provisioned": true
+                }
+            ],
+            "convert_to_template": true,
+            "notes": "created on: {{isotime}}"
+        }
+    ],
+    "provisioners": [
+        {
+            "inline": [
+                "dir c:\\"
+            ],
+            "type": "windows-shell"
+        }
+    ]
+}
