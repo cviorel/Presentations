@@ -176,7 +176,7 @@ foreach ($node in $sqlNodes.Keys) {
     Set-DbaErrorLogConfig -SqlInstance $sqlInstance -LogCount 25 -LogSize 102400 # 100 MB
 
     # Suppress all successful backups in SQL server error log
-    Set-DbaStartupParameter -SqlInstance "$node\$SQLInstanceName" -TraceFlag 3226 -Confirm:$false -Force
+    Set-DbaStartupParameter -SqlInstance "$node\$SQLInstanceName" -TraceFlag 3226, 7745 -Confirm:$false -Force
 
     # Rename and disable SA
     Get-DbaLogin -SqlInstance $sqlInstance -Login 'sa' | Set-DbaLogin -NewName 'sqladmin' -Disable
