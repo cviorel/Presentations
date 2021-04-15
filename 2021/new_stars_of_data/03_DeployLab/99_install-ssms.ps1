@@ -94,7 +94,7 @@ function Install-SSMS {
 
     # Check the last version of SSMS
     $uri = 'https://raw.githubusercontent.com/MicrosoftDocs/sql-docs/live/docs/ssms/release-notes-ssms.md'
-    $md = Invoke-WebRequest -Uri $uri | Select-Object -ExpandProperty Content
+    $md = Invoke-WebRequest -Uri $uri -UseBasicParsing | Select-Object -ExpandProperty Content
 
     $regEx = '(- Release number\:\s+(\d+\.)?(\d+\.)?(\d+))|(- Build number\:\s+(\d+\.)(\d+\.)(\d+\.)(\d+))|(- Release date\:\s+(\w+\s+\d{1,2})\,\s+\d{4})'
 
