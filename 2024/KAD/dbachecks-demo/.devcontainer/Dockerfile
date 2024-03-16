@@ -61,6 +61,7 @@ FROM builder AS final
 RUN export PATH="$HOME/.local/share/powershell/Modules:$PATH" \
     && mkdir -p ~/.config/powershell \
     && cp /tmp/profile.ps1 ~/.config/powershell/Microsoft.PowerShell_profile.ps1 \
+    && cp /tmp/profile.ps1 ~/.config/powershell/Microsoft.VSCode_profile.ps1 \
     && curl -O https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/jandedobbeleer.omp.json \
     && chown -R $USERNAME:$USERNAME /home/$USERNAME
 

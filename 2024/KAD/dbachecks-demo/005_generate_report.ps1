@@ -24,10 +24,16 @@ Runs the script to generate and open the dbachecks report.
 - The default browser will be used to open the generated report.
 #>
 
-Remove-Item .\dbachecks\Report\*.html -Force -ErrorAction SilentlyContinue
+if ($IsLinux) {
+    Write-Output "This script is not supported on Linux."
+    return
+}
+else {
+    Remove-Item .\dbachecks\Report\*.html -Force -ErrorAction SilentlyContinue
 
-Import-Module -Name dbachecks -Force
-$modulePath = (Get-Module -Name dbachecks).ModuleBase
-$reportunit = "$modulePath\bin\ReportUnit.exe"
-& $reportunit .\dbachecks\Report\
-Invoke-Item .\dbachecks\Report\Index.html
+    Import-Module -Name dbachecks -Force
+    $modulePath = (Get-Module -Name dbachecks).ModuleBase
+    $reportunit = "$modulePath\bin\ReportUnit.exe"
+    & $reportunit .\dbachecks\Report\
+    Invoke-Item .\dbachecks\Report\Index.html
+}
